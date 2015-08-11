@@ -1,6 +1,6 @@
 package br.edu.ufcg.reuml.dao;
 
-import br.edu.ufcg.reuml.diagrams.UMLDiagram;
+import br.edu.ufcg.reuml.diagram.UMLDiagram;
 
 /**
  * Created by gustavo on 11/08/15.

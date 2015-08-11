@@ -21,12 +21,12 @@
 
 
         <!-- Mapping classes -->
-        <mapping class="br.edu.ufcg.reuml.profiles.UMLProfile" />
-        <mapping class="br.edu.ufcg.reuml.profiles.ClassDiagramProfile" />
-        <mapping class="br.edu.ufcg.reuml.profiles.SequenceDiagramProfile" />
-        <mapping class="br.edu.ufcg.reuml.diagrams.UMLDiagram" />
-        <mapping class="br.edu.ufcg.reuml.diagrams.ClassDiagram" />
-        <mapping class="br.edu.ufcg.reuml.diagrams.SequenceDiagram" />
+        <mapping class="br.edu.ufcg.reuml.profile.UMLProfile" />
+        <mapping class="br.edu.ufcg.reuml.profile.ClassDiagramProfile" />
+        <mapping class="br.edu.ufcg.reuml.profile.SequenceDiagramProfile" />
+        <mapping class="br.edu.ufcg.reuml.diagram.UMLDiagram" />
+        <mapping class="br.edu.ufcg.reuml.diagram.ClassDiagram" />
+        <mapping class="br.edu.ufcg.reuml.diagram.SequenceDiagram" />
 
     </session-factory>
 </hibernate-configuration>

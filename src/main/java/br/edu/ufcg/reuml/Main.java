@@ -2,8 +2,8 @@ package br.edu.ufcg.reuml;
 
 import br.edu.ufcg.reuml.dao.UMLProfileDAO;
 import br.edu.ufcg.reuml.dao.HibernateUtil;
-import br.edu.ufcg.reuml.profiles.ClassDiagramProfile;
-import br.edu.ufcg.reuml.profiles.UMLProfile;
+import br.edu.ufcg.reuml.profile.ClassDiagramProfile;
+import br.edu.ufcg.reuml.profile.UMLProfile;
 import org.hibernate.Session;
 
 /**
