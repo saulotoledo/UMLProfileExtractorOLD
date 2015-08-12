@@ -8,11 +8,13 @@ import org.hibernate.Transaction;
 import javax.persistence.RollbackException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 /**
  * Abstract Data Acess Object.
  * Idea from http://websystique.com/springmvc/spring-4-mvc-and-hibernate4-integration-example-using-annotations/
  * and http://blog.stchedroff.com/2012/12/09/a-generic-dao-using-jpa-and-hibernate-4/
+ * Created by gustavo on 11/08/15.
  */
 public abstract class AbstractDAO<PK extends Serializable, T> {
     private final Class<T> persistentClass;
@@ -33,6 +35,15 @@ public abstract class AbstractDAO<PK extends Serializable, T> {
 
         session.close();
         return result;
+    }
+
+    public List<T> getAll() {
+        startOperation();
+        List<T> list = (List<T>) session.createCriteria(persistentClass).list();
+        transaction.commit();
+
+        session.close();
+        return list;
     }
 
     public void persist(T entity) {
