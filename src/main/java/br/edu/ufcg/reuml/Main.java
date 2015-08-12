@@ -4,6 +4,8 @@ import br.edu.ufcg.reuml.dao.UMLProfileDAO;
 import br.edu.ufcg.reuml.dao.HibernateUtil;
 import br.edu.ufcg.reuml.profile.ClassDiagramProfile;
 import br.edu.ufcg.reuml.profile.UMLProfile;
+import br.edu.ufcg.reuml.service.UMLProfileService;
+import br.edu.ufcg.reuml.strategy.CosineSimilarity;
 import org.hibernate.Session;
 
 /**
@@ -11,22 +13,8 @@ import org.hibernate.Session;
  */
 public class Main {
     public static void main(String[] args) {
-        UMLProfile profile = new ClassDiagramProfile(0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0);
-        UMLProfile profile2 = new ClassDiagramProfile(0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0);
-
-        //Not Using DAO
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        session.save(profile);
-        session.getTransaction().commit();
-
-
-        //Using DAO
-        UMLProfileDAO dao = new UMLProfileDAO();
-        dao.save(profile2);
-
-        //Ending Conection
-        HibernateUtil.shutdown();
+        UMLProfileService service = new UMLProfileService();
+        UMLProfile profile = service.getClassDiagramProfile("/home/gustavo/Downloads/class/xBaseJ.uml");
+        System.out.println(profile.toString());
     }
 }

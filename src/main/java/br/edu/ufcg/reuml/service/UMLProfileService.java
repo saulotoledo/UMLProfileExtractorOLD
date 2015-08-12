@@ -8,8 +8,11 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +21,7 @@ import java.util.Map;
  */
 public class UMLProfileService {
     private UMLProfileDAO dao;
-    private static final String METRICS_PACKAGE = "br.edu.ufcg.reuml.models.metrics.";
+    private static final String METRICS_PACKAGE = "br.edu.ufcg.reuml.metric.";
 
     public UMLProfileService() {
         dao = new UMLProfileDAO();
@@ -137,7 +140,10 @@ public class UMLProfileService {
     private <T extends UMLProfile> T getUMLProfile(Class<T> clazz, Document doc) {
 
         T profile = null;
-        String type = clazz.getName().replaceAll("DiagramProfile","").toLowerCase() + "profile.";
+        String type = clazz.getSimpleName().replaceAll("DiagramProfile","").toLowerCase() + "profile.";
+
+        //helper map
+        Map<String, Measurable> metricMap = new HashMap<>();
 
         try {
             profile = clazz.getDeclaredConstructor().newInstance();
@@ -145,53 +151,64 @@ public class UMLProfileService {
             e.printStackTrace();
         }
 
-        //get the class methods
-        Method[] methods = clazz.getDeclaredMethods();
-        //helper map
-        Map<String, Measurable> metricMap = new HashMap<>();
+        //get the class attributes(or fields)
+        Field[] fields = clazz.getDeclaredFields();
+        //helper list
+        List<Measurable> metricList = new ArrayList<>();
+        for (Field field : fields) {
+            Class metricClass = null;
 
-        for (Method method : methods) {
-            String methodName = method.getName();
-            if (methodName.contains("get")){
+            try {
+                metricClass = Class.forName(METRICS_PACKAGE + type + field.getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                //here we need to throw some exception
+                //because if there is a ClassNotFound, our pattern isn't been
+                //used the right way
+            }
 
-                String metricName = methodName.substring(3);
-                Class metricClass = null;
+            Constructor constructor = null;
+            try {
+                constructor = metricClass.getDeclaredConstructor();
+            } catch (Exception e) {
+                e.printStackTrace();
+                //same here
+            }
 
-                try {
-                    metricClass = Class.forName(METRICS_PACKAGE + type + metricName);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+            Measurable measurable = null;
 
-                Constructor constructor = null;
-                try {
-                    constructor = metricClass.getDeclaredConstructor();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Measurable measurable = null;
+            try {
+                measurable = (Measurable) constructor.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                //and here
+            }
 
-                try {
-                    measurable = (Measurable) constructor.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                metricMap.put("set" + methodName.substring(3), measurable);
+            if (measurable != null) {
+                metricList.add(measurable);
             }
         }
 
-        for (Method method : methods) {
-            String methodName = method.getName();
-            if (methodName.contains("set")) {
-                double value = metricMap.get(methodName).measureMetric(doc);
-                try {
-                    method.invoke(profile, value);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        for (Measurable metric : metricList) {
+            String setterName = "set" + metric.getClass().getSimpleName();
+            Method setter = null;
+            try {
+                setter = clazz.getDeclaredMethod(setterName, double.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                //Same thing
+            }
+
+            double value = metric.measureMetric(doc);
+
+            try {
+                setter.invoke(profile, value);
+            } catch (Exception e) {
+                e.printStackTrace();
+                //here too
             }
         }
+
         return profile;
     }
 }
