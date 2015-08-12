@@ -142,9 +142,6 @@ public class UMLProfileService {
         T profile = null;
         String type = clazz.getSimpleName().replaceAll("DiagramProfile","").toLowerCase() + "profile.";
 
-        //helper map
-        Map<String, Measurable> metricMap = new HashMap<>();
-
         try {
             profile = clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
