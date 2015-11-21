@@ -1,10 +1,16 @@
 package br.edu.ufcg.splab.reuml.feature.classprofile;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import br.edu.ufcg.splab.reuml.feature.Measurable;
-
-import org.w3c.dom.*;
-
-import javax.xml.xpath.*;
 
 /**
  * Created by gustavo on 22/04/15.
@@ -52,12 +58,17 @@ public class PRMAT implements Measurable {
                     for (int k = 0; k < values.getLength(); k++) {
                         Node value = values.item(k);
 
-                        if (value.getNodeName().equals(UPPER_VALUE)) {
-                            upperValue = value.getAttributes().getNamedItem("value").getNodeValue();
-                        }
+                        lowerValue = null;
+                        upperValue = null;
 
-                        if (value.getNodeName().equals(LOWER_VALUE)) {
-                            lowerValue = value.getAttributes().getNamedItem("value").getNodeValue();
+                        if (value.getAttributes() != null && value.getAttributes().getNamedItem("value") != null) {
+                            if (value.getNodeName().equals(UPPER_VALUE)) {
+                                upperValue = value.getAttributes().getNamedItem("value").getNodeValue();
+                            }
+
+                            if (value.getNodeName().equals(LOWER_VALUE)) {
+                                lowerValue = value.getAttributes().getNamedItem("value").getNodeValue();
+                            }
                         }
                     }
 
